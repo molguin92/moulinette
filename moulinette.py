@@ -6,7 +6,7 @@ import sys
 
 
 
-def eval ( package_name, main_class, test_input, test_output, max_runtime ):
+def java_eval ( package_name, main_class, test_input, test_output, max_runtime ):
 
     print ( 'Evaluating ' + package_name + '.' + main_class + '...\n' )
     program = Popen( ('/usr/bin/java', package_name + '.' + main_class), stdin=PIPE, stderr=PIPE, stdout=PIPE, universal_newlines=True)

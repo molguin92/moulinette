@@ -60,10 +60,13 @@ def eval_homework ( course_code='cc3001', homework_id='tarea1', parts=3 ):
 
     alumni = os.listdir(path=('./submissions/' + course_code + '/' + homework_id + '/'))
 
+    os.chdir( './submissions/' + course_code + '/' + homework_id )
     #compile!
+    print ('Compiling...')
     for student in alumni:
-        program = Popen( ('/usr/bin/javac', ('./submissions/' + course_code + '/' + homework_id + '/' + student +
-                                             '/*.java')), stdin=PIPE, stderr=PIPE, stdout=PIPE, universal_newlines=True)
+        print(student, end='... ')
+        os.chdir(student)
+        program = Popen('/usr/bin/javac *.java', shell=True, stdin=PIPE, stderr=PIPE, stdout=PIPE, universal_newlines=True )
         out, err = program.communicate()
 
         if program.returncode != 0:
@@ -73,16 +76,33 @@ def eval_homework ( course_code='cc3001', homework_id='tarea1', parts=3 ):
             print( out )
             print( '\n\n' )
 
+        print('Compiled correctly.')
+        os.chdir('..')
+
+    os.chdir('../../../')
+
+    #parse inputs and outputs into strings
+    pinputs = []
+    poutputs = []
+    for input in inputs:
+        file = open ( ('./inputs/' + course_code + '/' + homework_id + '/' + input), mode='r' )
+        pinputs.append( file.read() )
+    for output in outputs:
+        file = open ( ('./outputs/' + course_code + '/' + homework_id + '/' + output), mode='r' )
+        poutputs.append( file.read() )
+
     #run!
     os.chdir('./submissions')
     pkg_suffix = course_code + '.' + homework_id + '.'
     for student in alumni:
-        for i in range(start=1, stop=(parts + 1)):
-            ret = java_eval( pkg_suffix + student, 'Parte' + i, inputs[i - 1], outputs[i - 1], 1 )
+        i = 0
+        while i < parts:
+            ret = java_eval( pkg_suffix + student, 'Parte' + str(i + 1), pinputs[i], poutputs[i], 1 )
             if ret != 1:
                 print(student + ' has an incorrect homework. \n')
             else:
                 print(student + ' has a correct homework! \n')
+            i += 1
 
     os.chdir('..')
 

@@ -34,7 +34,10 @@ def java_eval ( package_name, main_class, test_input, test_output, max_runtime )
 
     correct_lines = test_output.splitlines()
     test_lines = out.splitlines()
-    correct = 1;
+    correct = 1
+
+    if ( len(correct_lines) != len(test_lines) ):
+        return 0
 
     for i in range( len(correct_lines) ):
         #print ( 'Test case {0}: '.format(i + 1))
@@ -62,9 +65,9 @@ def eval_homework ( course_code='cc3001', homework_id='tarea1', parts=3 ):
 
     os.chdir( './submissions/' + course_code + '/' + homework_id )
     #compile!
-    print ('Compiling...')
+    print('Compiling...')
     for student in alumni:
-        print(student, end='... ')
+        print('\t' + student, end='... ')
         os.chdir(student)
         program = Popen('/usr/bin/javac *.java', shell=True, stdin=PIPE, stderr=PIPE, stdout=PIPE, universal_newlines=True )
         out, err = program.communicate()
@@ -72,9 +75,9 @@ def eval_homework ( course_code='cc3001', homework_id='tarea1', parts=3 ):
         if program.returncode != 0:
             print( 'Error when compiling submission by: ' + student + '\n' )
             print( err )
-            print( '\n\n' )
+            print( '\n' )
             print( out )
-            print( '\n\n' )
+            print( '\n' )
 
         print('Compiled correctly.')
         os.chdir('..')
@@ -93,15 +96,18 @@ def eval_homework ( course_code='cc3001', homework_id='tarea1', parts=3 ):
 
     #run!
     os.chdir('./submissions')
+    print('Evaluating...')
     pkg_suffix = course_code + '.' + homework_id + '.'
     for student in alumni:
+        print('\tEvaluating ' + student)
         i = 0
         while i < parts:
+            print('\t\tPart' + str(i+1), end='... ')
             ret = java_eval( pkg_suffix + student, 'Parte' + str(i + 1), pinputs[i], poutputs[i], 1 )
             if ret != 1:
-                print(student + ' has an incorrect homework. \n')
+                print('Incorrect \u2717')
             else:
-                print(student + ' has a correct homework! \n')
+                print('Correct \u2713')
             i += 1
 
     os.chdir('..')

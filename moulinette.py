@@ -20,8 +20,8 @@ def java_eval(package_name, main_class, test_input, test_output, max_runtime):
         return -1
 
     if program.returncode != 0:
-        #sys.stderr.write(err)
-        #sys.stderr.write('\n')
+        sys.stdout.write(err)
+        sys.stdout.write('\n')
         return -1
 
     # TODO: Test cases longer than one line.
@@ -30,15 +30,16 @@ def java_eval(package_name, main_class, test_input, test_output, max_runtime):
     test_lines = out.splitlines()
     correct = 1
 
-    if (len(correct_lines) != len(test_lines)):
-        print('\tIncorrect number of output lines')
+    if len(correct_lines) != len(test_lines):
+        print('\tIncorrect number of output lines. Correct: {0}, got {1}.'.format(len(correct_lines), len(test_lines)))
         return 0
 
     for i in range(len(correct_lines)):
         # print ( 'Test case {0}: '.format(i + 1))
 
         if test_lines[i].strip() != correct_lines[i].strip():
-            print('\n\t\t\tIncorrect output, line ' + str(i), end='')
+            print('\n\t\t\tIncorrect output, line {0}. Expected: {1} \t Got: {2}'.format(i, correct_lines[i].strip(),
+                                                                                         test_lines[i].strip()), end='')
             correct = 0
 
     return correct
@@ -66,14 +67,14 @@ def eval_homework(course_code='cc3001', homework_id='tarea1', parts=3):
     for student in alumni:
         print('\t' + student, end='... ')
         os.chdir(student)
-        program = Popen('/usr/bin/javac *.java', shell=True, stdin=PIPE, stderr=PIPE, stdout=PIPE,
+        program = Popen('/usr/bin/javac *.java -encoding latin1', shell=True, stdin=PIPE, stderr=PIPE, stdout=PIPE,
                         universal_newlines=True)
         out, err = program.communicate()
 
         if program.returncode != 0:
             print('Error when compiling submission.\n')
-            #sys.stderr.write(err)
-            #sys.stderr.write('\n')
+            sys.stdout.write(err)
+            sys.stderr.write('\n')
         else:
             print('Compiled correctly.\n')
         os.chdir('..')
@@ -98,7 +99,7 @@ def eval_homework(course_code='cc3001', homework_id='tarea1', parts=3):
         print('\n\tEvaluating ' + student)
         i = 0
         while i < parts:
-            print('\t\tPart' + str(i + 1), end='... ')
+            print('\n\t\tPart' + str(i + 1), end='... ')
             ret = java_eval(pkg_suffix + student, 'Parte' + str(i + 1), pinputs[i], poutputs[i], 1)
             if ret == 1:
                 print('Correct \u2713')

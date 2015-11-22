@@ -32,6 +32,13 @@ def java_eval(package_name, main_class, test_input, test_output, max_runtime):
 
     if len(correct_lines) != len(test_lines):
         print('\tIncorrect number of output lines. Correct: {0}, got {1}.'.format(len(correct_lines), len(test_lines)))
+        print('Correct lines: ')
+        for line in correct_lines:
+            print(line)
+        print('\nGot: ')
+        for line in test_lines:
+            print(line)
+        print('\n\n ')
         return 0
 
     for i in range(len(correct_lines)):

@@ -52,7 +52,7 @@ def java_eval(package_name, main_class, test_input, test_output, max_runtime):
     return correct
 
 
-def eval_homework(course_code='cc3001', homework_id='tarea1', parts=3):
+def eval_homework(course_code='cc3001', homework_id='tarea3', parts=2):
     inputs = os.listdir(path=('./inputs/' + course_code + '/' + homework_id + '/'))
     outputs = os.listdir(path=('./outputs/' + course_code + '/' + homework_id + '/'))
     inputs.sort()
